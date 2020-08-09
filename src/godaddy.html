@@ -1,0 +1,290 @@
+<script type="text/javascript">
+    function _edtLstResizeItem(row) {
+        const newWidth = row.width() - 10;
+        const $name = row.find('.node-input-item-name');
+        const $domain = row.find('.node-input-item-domain');
+        const $btn = row.find('.node-button-item-edit');
+        const btnWidth = $btn.width();
+        const tbWidth = (newWidth - 45 - btnWidth) / 2;
+        $name.width(tbWidth);
+        $domain.width(tbWidth);
+    }
+    function getData(rule) {
+        return {
+            name: rule.find('.node-input-item-name').val(),           
+            type: rule.find('.node-input-item-type').val(),
+            ttl: rule.find('.node-input-item-ttl').val(),
+            domain: rule.find('.node-input-item-domain').val()
+        };
+    }
+
+    function saveItems(node) {
+        console.log('saveItems'); // eslint-disable-line
+        node.items = [];
+        const itemsArr = $('#node-input-item-container').editableList('items');
+        if (itemsArr) {
+            itemsArr.each(function (_i) {
+                const rule = $(this);
+                node.items.push(getData(rule));
+            });
+        }
+        console.log(node.items); // eslint-disable-line
+    }
+    RED
+        .nodes
+        .registerType('godaddy-node', {
+            category: 'godaddy',
+            defaults: {
+                confignode: {
+                    value: "",
+                    type: "godaddy-config",
+                    required: true
+                },
+                name: {
+                    value: '',
+                    required: false
+                },               
+                items: {
+                    value: [],
+                    required: true
+                }
+            },
+            inputs: 1,
+            outputs: 1,
+            color: "#E7AE24",
+            label: function () {
+                if (this.name) {
+                    return this.name;
+                }
+                return "godaddy";
+            },
+            icon: "dns.png",
+            paletteLabel: "godaddy",
+            oneditprepare: function () {
+                const node = this;
+
+                $('#node-input-confignode').change(function () {
+                    var config = $('#node-input-confignode').val()
+                    node.confignode = config;
+                });
+
+                $('.rdg-ui-btn').button();
+
+                function _loadItems(node) {
+                    console.log('_loadItems'); // eslint-disable-line
+                    console.log(node.items); // eslint-disable-line
+                    if (node.items) {
+                        node.items.forEach((item) => {
+                            $('#node-input-item-container').editableList('addItem', item);
+                        });
+                    }
+                }
+
+                function _addItems(node, region) {
+                    saveItems(node);
+                    _loadItems(node);
+                }
+
+                function _edtLstAddItem(containerRow, containerIndex, data) {
+                    containerRow.css({ overflow: 'hidden', whiteSpace: 'nowrap' });
+                    const row = $('<div/>').appendTo(containerRow);
+
+                    const $name = $('<input/>', {
+                        class: 'node-input-item-name',
+                        type: 'text',
+                        value: (data.name || ''),
+                        title: 'name',
+                        placeholder: 'name'
+                    }).appendTo(row);
+                    $('<input/>', {
+                        class: 'node-input-item-domain',
+                        type: 'text',
+                        value: (data.domain || '')
+                    }).appendTo(row);
+
+                    $('<input/>', {
+                        class: 'node-input-item-ttl',
+                        type: 'hidden',
+                        value: (data.ttl || '600')
+                    }).appendTo(row);
+
+                    $('<input/>', {
+                        class: 'node-input-item-type',
+                        type: 'hidden',
+                        value: (data.type || 'A')
+                    }).appendTo(row);
+
+                    const $btn = $('<a />', {
+                        class: 'node-button-item-edit btn ui-button ui-widget ui-corner-all'
+                    }).append('<i class= "fa fa-pencil-square-o" >').appendTo(row);
+                    $btn.button();
+                    $btn.click(() => {
+                        _dialogLoadData(row);
+                    });
+
+                    _edtLstResizeItem(containerRow);
+                }
+
+                $('#node-input-item-container').css('min-height', '200px').css('min-width', '200px').editableList({
+                    addItem: _edtLstAddItem,
+                    sortItems(items) {
+                        items = $('#node-input-item-container').editableList('items');
+                    },
+                    resizeItem: _edtLstResizeItem,
+                    addButton: false,
+                    sortable: true,
+                    removable: true,
+                    scrollOnAdd: true
+                });
+
+
+                let $dialogConnFields = {};
+                const $dialogdomain = $('#dialog-input-domain');
+                const $dialogName = $('#dialog-input-name');              
+                const $dialogtype = $('#dialog-input-type');
+                const $dialogttl = $('#dialog-input-ttl');
+
+                function _dialogLoadData(rule) {
+                    $dialogConnFields = rule;
+                    $dialogdomain.val(rule.find('.node-input-item-domain').val());
+                    $dialogName.val(rule.find('.node-input-item-name').val());                  
+                    $dialogttl.val( rule.find('.node-input-item-ttl').val());
+                    $dialogtype.val( rule.find('.node-input-item-type').val());
+
+                    $dialog.dialog('open');
+                }
+
+                function _dialogSaveData() {
+                    console.log('dialogSaveData'); // eslint-disable-line
+
+
+                    $dialogConnFields.find('.node-input-item-domain').val($dialogdomain.val());
+                    $dialogConnFields.find('.node-input-item-name').val($dialogName.val());
+                    $dialogConnFields.find('.node-input-item-type').val( $dialogtype.val());
+                    $dialogConnFields.find('.node-input-item-ttl').val( $dialogttl.val());
+                    
+
+                    $dialog.dialog('close');
+                }
+
+                function _dialogDateOutChg() {
+                    const dlgTitle = node._('godaddy-node.label.dialogtitle') + ' [' + $dialogdomain.val() + ' / ' + $.datepicker.formatDate('yy-mm-dd', date) + ']';
+                    if (date2) {
+                        $dialogLabel.text(node._('godaddy-node.label.exampleDate') + ' ' + $.datepicker.formatDate('yy: MM d', date) + ' / ' + $.datepicker.formatDate('yy: MM d', date2));
+                    } else {
+                        $dialogLabel.text(node._('godaddy-node.label.exampleDate') + ' ' + $.datepicker.formatDate('MM d (mm-dd)', date));
+                    }
+                    $dialog.dialog('option', 'title', dlgTitle);
+                }
+
+                $("label[for='dialog-input-id']").text(node._('godaddy-node.label.id'));
+                $("label[for='dialog-input-name']").text(node._('godaddy-node.label.name'));
+
+                $dialogdomain.change(() => { _dialogDateOutChg(); });
+
+                const $dialog = $('#dialog-edit-item').dialog({
+                    title: node._('godaddy-node.label.dialogtitle'),
+                    autoOpen: false,
+                    resizable: true,
+                    height: Math.min(580, $(window).height() * 0.8),
+                    width: Math.min(530, $(window).width() * 0.8),
+                    modal: true,
+                    closeOnEscape: true,
+                    buttons: {
+                        Ok: _dialogSaveData,
+                        Cancel: function () {
+                            $dialog.dialog('close');
+                        }
+                    },
+                    close: function () {
+                    }
+                });
+
+                const $dialogForm = $dialog.find('form');
+                $dialogForm.on('submit', (event) => {
+                    event.preventDefault();
+                    _dialogSaveData();
+                });
+
+
+                const $btnAdd = $('#node-button-btnAdd');
+                $btnAdd.click(() => {
+                    $('#node-input-item-container').editableList('addItem', {});
+                });
+
+                const $btnClear = $('#node-button-btnClear');
+                $btnClear.click(() => {
+                    $('#node-input-item-container').editableList('empty');
+                });
+
+                _loadItems(node);
+
+
+              
+            },
+            oneditsave() {
+                const node = this;
+                saveItems(node);
+               
+            },
+            oneditresize(_size) {
+                if (typeof $().editableList !== 'undefined') {
+                    
+                    const postrules = $('#node-input-rule-container').editableList('items');
+                    postrules.each(function (_i) {
+                        //_edtLstResizeItem($(this));
+                    });
+                }
+            }
+        });
+</script>
+
+<script type="text/x-red" data-template-name="godaddy-node">
+    <div>
+        <label for="node-input-item-container-row"><i class="fa fa-list"></i> <span >list of dns entries</span></label>
+        <div class="node-input-item-container-row">
+            <ol id="node-input-item-container" class="node-input-item-container"></ol>
+            <button type="button" id="node-button-btnAdd" class="rdg-ui-btn red-ui-button red-ui-button-small" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span>add</span></button> &nbsp;
+            <button type="button" id="node-button-btnClear" class="rdg-ui-btn red-ui-button red-ui-button-small" style="margin-top: 4px;"><i class="fa fa-eraser"></i> <span >clear</span></button> &nbsp;          
+        </div>  
+        <div class="node-input-rule-container-row">
+            <ol id="node-input-rule-container"></ol>      
+        </div>            
+    </div>
+    
+    <hr>
+    
+    <div class="form-row">
+        <label for="node-input-confignode"><i class="fa fa-globe"></i> <span>Config</span></label>
+        <input type="text" id="node-input-confignode">
+    </div>  
+   
+    <div class="form-row" data-i18n="[title]node-red:common.label.name">
+        <label for="node-input-name"><i class="icon-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+
+    <div id="dialog-edit-item" class="red-ui-editor">       
+        <div class="form-row">
+            <label for="dialog-input-name">name</label>
+            <input type="text" name="dialog-input-name" id="dialog-input-name" class="text ui-widget-content ui-corner-all">
+        </div>
+     
+        <div class="form-row">
+            <label for="dialog-input-domain">domain</label>
+            <input type="text" name="dialog-input-domain" id="dialog-input-domain" class="text ui-widget-content ui-corner-all">
+        </div>        
+        <div class="form-row">
+            <label for="dialog-input-type">type</label>
+            <input type="text" name="dialog-input-type" id="dialog-input-type" class="text ui-widget-content ui-corner-all">
+        </div>        
+        <div class="form-row">
+            <label for="dialog-input-ttl">ttl</label>
+            <input type="text" name="dialog-input-ttl" id="dialog-input-ttl" class="text ui-widget-content ui-corner-all">
+        </div>        
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="godaddy-node">
+
+</script>

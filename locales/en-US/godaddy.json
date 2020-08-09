@@ -1,0 +1,20 @@
+{
+    "godaddy-node": {
+        "label": {           
+            "list": "list",  
+            "weight":"weight",
+            "btnAdd": "add",  
+            "btnClear": "clear",
+            "dialogtitle": "edit entry",            
+            "id": "ID",
+            "name":"name",
+            "nameAlt":"alternate name"  ,
+            "context":"context store"          
+        },
+        "placeholder": {         
+            "name": "name"           
+        },        
+        "tips": {
+        }
+    }
+}

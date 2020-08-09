@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    RED
+        .nodes
+        .registerType('godaddy-config', {
+            category: 'config',
+            defaults: {
+                name: {
+                    value: ""
+                }, 
+                
+                key: {
+                    value: ""
+                },
+                 secret: {
+                    value: ""
+                }
+            },
+            label: function () {
+                if (this.name) {
+                    return this.name;
+                }
+                return "Config";
+            }
+
+        });
+</script>
+
+<script type="text/x-red" data-template-name="godaddy-config">
+
+    <div class="form-row">
+        <label for="node-config-input-name" style="width:160px !important">
+            <i class="fa fa-user"></i>
+            <span>Name:</span></label>
+        <input type="text" id="node-config-input-name" placeholder="" style="width:280px !important">
+    </div>
+    <hr/>
+    <div class="form-row">
+        <label for="node-config-input-key" style="width:160px !important">
+            <i class="fa fa-user"></i>
+            <span>API key:</span></label>
+        <input type="text" id="node-config-input-key" placeholder="" style="width:280px !important">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-secret" style="width:160px !important">
+            <i class="fa fa-user"></i>
+            <span>Secret:</span></label>
+        <input type="text" id="node-config-input-secret" placeholder="" style="width:280px !important">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="godaddy-config">
+
+</script>
