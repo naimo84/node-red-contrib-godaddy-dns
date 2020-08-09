@@ -1,4 +1,6 @@
-# Node RED 
+# Node RED godaddy dns
+
+This Node RED module updates your GoDaddy domains with your current public IP (aka DynDNS).
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
@@ -55,9 +57,27 @@ npm install /path/to/node-red-contrib-godaddy-dns
 
 ## :memo: Documentation
 
-### node explanation:
+### update your DNS entries
 
+Normally I update my dns entries under https://dcc.godaddy.com/manage/naimo84.dev/dns manually. With this nodes, it's done automatically. 
 
+![](./examples/dns.png)
+
+Just enter your domain name, the type (usually A), and the time to live (TTL). With every input your domain's IP will be updated.
+
+You can also enter the values wihtin an input message like this:
+
+msg.payload = {
+    newIp: "1.2.3.4"
+    entries: {
+        domain: "example.com",
+        name: "subdomain",
+        type: "A",
+        ttl: 600
+    }
+}
+
+You will need to get an API key from https://developer.godaddy.com/keys as well.
 
 ## :scroll: The MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
