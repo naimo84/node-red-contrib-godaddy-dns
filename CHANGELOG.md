@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/naimo84/node-red-contrib-godaddy-dns/compare/v0.0.3...v0.0.4) (2020-08-13)
+
 ### 0.0.3 (2020-08-13)
 
 
