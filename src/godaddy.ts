@@ -79,8 +79,8 @@ module.exports = function (RED: Red) {
     async function getDns(node, outMsg) {
         try {
             let currentIp = await getCurrentIp();
-            let lastIp = node.context().get('lastIp');
-            if (lastIp && lastIp != currentIp) {
+            let lastIp:String = node.context().get('lastIp');
+            if (!lastIp ||  lastIp != currentIp) {
                 let items = node.items;
                 if (outMsg.payload) {
                     if (outMsg.payload.newIp) {

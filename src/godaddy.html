@@ -168,13 +168,8 @@
                 }
 
                 function _dialogDateOutChg() {
-                    const dlgTitle = node._('godaddy-node.label.dialogtitle') + ' [' + $dialogdomain.val() + ' / ' + $.datepicker.formatDate('yy-mm-dd', date) + ']';
-                    if (date2) {
-                        $dialogLabel.text(node._('godaddy-node.label.exampleDate') + ' ' + $.datepicker.formatDate('yy: MM d', date) + ' / ' + $.datepicker.formatDate('yy: MM d', date2));
-                    } else {
-                        $dialogLabel.text(node._('godaddy-node.label.exampleDate') + ' ' + $.datepicker.formatDate('MM d (mm-dd)', date));
-                    }
-                    $dialog.dialog('option', 'title', dlgTitle);
+                   
+                    $dialog.dialog('option', 'title', 'godaddy');
                 }
 
                 $("label[for='dialog-input-id']").text(node._('godaddy-node.label.id'));
