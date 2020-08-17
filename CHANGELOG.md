@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/naimo84/node-red-contrib-godaddy-dns/compare/v0.0.7...v0.0.8) (2020-08-17)
+
+
+### Features
+
+* await context get ([b7150b2](https://github.com/naimo84/node-red-contrib-godaddy-dns/commit/b7150b27dbdc759a807df527c919ef4577c6b3c5))
+
 ### [0.0.7](https://github.com/naimo84/node-red-contrib-godaddy-dns/compare/v0.0.6...v0.0.7) (2020-08-14)
 
 
